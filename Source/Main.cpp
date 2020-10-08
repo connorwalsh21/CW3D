@@ -1,24 +1,84 @@
+#include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <GL/GL.h>
 #include <cstdio>
 #include <vector>
 #include <glm/glm.hpp>
+#include <Gl/GLU.h>
+#include "glm/gtc/matrix_transform.hpp"
+
+// Delta time
+float dt;
+float curTime;
+float lastTime;
 
 // Globals
-float x_loc = 0.0f;
-float y_loc = 0.0f;
-float z_loc = 0.0f;
+glm::vec3 position(0.f);
+glm::vec3 rotation(0.f);
+glm::vec3 scale(1.f);
 
-float x_rot = 0.5f;
-float y_rot = -0.5f;
-float z_rot = 0.5f;
+int resX;
+int resY;
+
+// Camera (Not implemented yet)
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 
-void getInput()
+void updateDt()
 {
-	// Todo: Create moveable camera
-    const float camSpeed = 0.5f;
+	curTime = static_cast<float>(glfwGetTime());
+	dt = curTime - lastTime;
+	lastTime = curTime;
+}
+
+void getInput(GLFWwindow* window)
+{
+	position.x = 0.f;
+	position.y = 0.f;
+	position.z = 0.f;
+	rotation.x = 0.f;
+	rotation.y = 0.f;
+	rotation.z = 0.f;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+		position.y += 1.f * dt;
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		position.y -= 1.f * dt;
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		position.x -= 1.f * dt;
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		position.x += 1.f * dt;
+	}
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	{
+		rotation.x = -1.f;
+		rotation.y = -1.f;
+		glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
+		glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
+		glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	{
+		rotation.y = 1.f;
+		rotation.z = 1.f;
+		glRotatef(rotation.x, 1.0f, 0.0f, 0.0f);
+		glRotatef(rotation.y, 0.0f, 1.0f, 0.0f);
+		glRotatef(rotation.z, 0.0f, 0.0f, 1.0f);
+	}
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		glfwDestroyWindow(window);
+		glfwTerminate();
+	}
 }
 
 void renderTriangle()
@@ -36,10 +96,12 @@ void renderTriangle()
 
 void renderCube()
 {
-	glTranslatef(x_loc, y_loc, z_loc);
+	glTranslatef(position.x, position.y, position.z);
+	
+	glScalef(scale.x, scale.y, scale.z);
+
 	glBegin(GL_QUADS);
 
-
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(-0.5f, -0.5f, 0.5f);
 	glColor3f(0.0f, 1.0f, 0.0f);
@@ -48,7 +110,6 @@ void renderCube()
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(-0.5f, 0.5f, 0.5f);
 
-
 	glVertex3f(-0.5f, -0.5f, -0.5f);
 	glVertex3f(-0.5f, 0.5f, -0.5f);
 	glColor3f(0.0f, 1.0f, 0.0f);
@@ -56,14 +117,12 @@ void renderCube()
 	glVertex3f(0.5f, -0.5f, -0.5f);
 	glColor3f(0.0f, 1.0f, 0.0f);
 
-
 	glVertex3f(-0.5f, -0.5f, 0.5f);
 	glVertex3f(-0.5f, 0.5f, 0.5f);
 	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(-0.5f, 0.5f, -0.5f);
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glVertex3f(-0.5f, -0.5f, -0.5f);
-
 
 	glVertex3f(0.5f, -0.5f, -0.5f);
 	glVertex3f(0.5f, 0.5f, -0.5f);
@@ -73,7 +132,6 @@ void renderCube()
 	glVertex3f(0.5f, -0.5f, 0.5f);
 	glColor3f(0.0f, 0.0f, 1.0f);
 
-
 	glVertex3f(-0.5f, 0.5f, 0.5f);
 	glVertex3f(0.5f, 0.5f, 0.5f);
 	glColor3f(0.0f, 1.0f, 0.0f);
@@ -81,27 +139,20 @@ void renderCube()
 	glVertex3f(-0.5f, 0.5f, -0.5f);
 	glColor3f(1.0f, 0.0f, 0.0f);
 
-
 	glVertex3f(-0.5f, -0.5f, 0.5f);
 	glColor3f(0.0f, 0.0f, 1.0f);
 	glVertex3f(-0.5f, -0.5f, -0.5f);
 	glVertex3f(0.5f, -0.5f, -0.5f);
 	glVertex3f(0.5f, -0.5f, 0.5f);
-
 
 	glEnd();
-
-
-	glRotatef(x_rot, 1.0f, 0.0f, 0.0f);
-	glRotatef(y_rot, 0.0f, 1.0f, 0.0f);
-	glRotatef(z_rot, 0.0f, 0.0f, 1.0f);
 }
 
 
 int main()
 {
-	int resX = 960;
-	int resY = 840;
+	resX = 960;
+	resY = 840;
 
     GLFWwindow* window;
 
@@ -109,15 +160,21 @@ int main()
     {
         return -1;
     }
-    
 
     window = glfwCreateWindow(resX, resY, "CW3D", NULL, NULL);
+
     if (!window)
     {
         printf("There has been an error opening the window.");
         glfwTerminate();
         return -1;
     }
+
+	dt = 0.f;
+	curTime = 0.f;
+	lastTime = 0.f;
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     glfwMakeContextCurrent(window);
 
@@ -127,6 +184,10 @@ int main()
 
         renderCube();
 
+		getInput(window);
+
+		updateDt();
+
         glfwSwapBuffers(window);
 
         glfwPollEvents();
@@ -134,5 +195,5 @@ int main()
     
     glfwDestroyWindow(window);
     glfwTerminate();
-    return 0;
+    return EXIT_SUCCESS;
 }
