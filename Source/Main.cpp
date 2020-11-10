@@ -21,7 +21,7 @@ glm::vec3 scale(1.f);
 int resX;
 int resY;
 
-// Camera (Not implemented yet)
+// Camera Globals
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -44,11 +44,13 @@ void getInput(GLFWwindow* window)
 	rotation.z = 0.f;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		position.y += 1.f * dt;
+		//position.y += 1.f * dt;
+		cameraPos.z += 100.f * dt;
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		position.y -= 1.f * dt;
+		//position.y -= 1.f * dt;
+		cameraPos.z -= 100.f * dt;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
@@ -76,28 +78,27 @@ void getInput(GLFWwindow* window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
-		glfwDestroyWindow(window);
-		glfwTerminate();
+		glfwSetWindowShouldClose(window, true);
 	}
 }
 
 void renderTriangle()
 {
-    glRotatef(1.f, 0.f, 0.f, 1.f);
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.f, 0.f, 0.f);
-    glVertex3f(-0.6f, -0.4f, 0.f);
-    glColor3f(0.f, 1.f, 0.f);
-    glVertex3f(0.6f, -0.4f, 0.f);
-    glColor3f(0.f, 0.f, 1.f);
-    glVertex3f(0.f, 0.6f, 0.f);
-    glEnd();
+	glRotatef(1.f, 0.f, 0.f, 1.f);
+	glBegin(GL_TRIANGLES);
+	glColor3f(1.f, 0.f, 0.f);
+	glVertex3f(-0.6f, -0.4f, 0.f);
+	glColor3f(0.f, 1.f, 0.f);
+	glVertex3f(0.6f, -0.4f, 0.f);
+	glColor3f(0.f, 0.f, 1.f);
+	glVertex3f(0.f, 0.6f, 0.f);
+	glEnd();
 }
 
 void renderCube()
 {
 	glTranslatef(position.x, position.y, position.z);
-	
+
 	glScalef(scale.x, scale.y, scale.z);
 
 	glBegin(GL_QUADS);
@@ -154,21 +155,21 @@ int main()
 	resX = 960;
 	resY = 840;
 
-    GLFWwindow* window;
+	GLFWwindow* window;
 
-    if (!glfwInit())
-    {
-        return -1;
-    }
+	if (!glfwInit())
+	{
+		return -1;
+	}
 
-    window = glfwCreateWindow(resX, resY, "CW3D", NULL, NULL);
+	window = glfwCreateWindow(resX, resY, "CW3D", NULL, NULL);
 
-    if (!window)
-    {
-        printf("There has been an error opening the window.");
-        glfwTerminate();
-        return -1;
-    }
+	if (!window)
+	{
+		printf("There has been an error opening the window.");
+		glfwTerminate();
+		return -1;
+	}
 
 	dt = 0.f;
 	curTime = 0.f;
@@ -176,24 +177,31 @@ int main()
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(window);
 
-    while (!glfwWindowShouldClose(window))
-    {
-        glClear(GL_COLOR_BUFFER_BIT);
+	while (!glfwWindowShouldClose(window))
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
 
-        renderCube();
+		glm::mat4 trans = glm::mat4(1.0f);
+		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		
+
+
+		renderCube();
 
 		getInput(window);
 
 		updateDt();
 
-        glfwSwapBuffers(window);
+		glfwSwapBuffers(window);
 
-        glfwPollEvents();
-    }
-    
-    glfwDestroyWindow(window);
-    glfwTerminate();
-    return EXIT_SUCCESS;
+		glfwPollEvents();
+	}
+
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	return EXIT_SUCCESS;
 }
