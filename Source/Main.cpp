@@ -28,7 +28,7 @@ float yaw = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 re
 float pitch = 0.0f;
 float lastX = resX / 2.0;
 float lastY = resY / 2.0;
-float fov = 45.0f;
+float fov = 75.0f;
 
 // Delta time value
 float deltaTime = 0.0f;
@@ -131,6 +131,8 @@ int main()
         glm::vec3(1.3f, -2.0f, -2.5f),
         glm::vec3(1.5f,  2.0f, -2.5f),
         glm::vec3(1.5f,  0.2f, -1.5f),
+        glm::vec3(3.0f,  -2.4f, -3.2f),
+        glm::vec3(-4.3f,  8.4f, 2.3f),
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
@@ -238,7 +240,7 @@ int main()
 
         // Render loop for objects
         glBindVertexArray(VAO);
-        for (unsigned int i = 0; i < 10; i++)
+        for (unsigned int i = 0; i < 12; i++)
         {
             // Calculate the model matrix for each object and pass it to shader before drawing
             // Make sure to initialize matrix to identity matrix first
