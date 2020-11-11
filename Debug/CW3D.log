@@ -1,10 +1,10 @@
 ﻿  Main.cpp
-C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(223,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(291,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(317,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(318,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(322,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(323,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(324,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(325,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(234,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(302,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(328,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(329,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(333,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(334,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(335,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(336,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   CW3D.vcxproj -> C:\Users\Connor\source\repos\CW3D\Debug\CW3D.exe

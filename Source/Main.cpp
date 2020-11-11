@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+#include <stdlib.h>
 #include <shader_m.h>
 
 #include <iostream>
@@ -16,8 +16,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 960;
 
 // camera
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -172,7 +172,18 @@ int main()
     // load image, create texture and generate mipmaps
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-    unsigned char* data = stbi_load("C:\\Users\\Connor\\source\\repos\\CW3D\\resources\\textures\\chad.jpg", &width, &height, &nrChannels, 0);
+
+    // Custom file texture loading
+    char full[_MAX_PATH];
+    const char* relPath = "resources\\textures\\chad.jpg";
+    if (_fullpath(full, relPath, _MAX_PATH) != NULL)
+        printf("The full path is: %s\n", full);
+    else
+        printf("Invalid path.\n");
+
+
+    // "C:\\Users\\Connor\\source\\repos\\CW3D\\resources\\textures\\chad.jpg"
+    unsigned char* data = stbi_load(full, &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
