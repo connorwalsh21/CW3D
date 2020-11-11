@@ -402,6 +402,7 @@
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
     <ClInclude Include="include\KHR\khrplatform.h" />
+    <ClInclude Include="include\root_directory.h" />
     <ClInclude Include="include\shader_m.h" />
     <ClInclude Include="include\shader_s.h" />
     <ClInclude Include="include\stb_image.h" />
@@ -546,6 +547,8 @@
     <None Include="README.md" />
     <None Include="Source\7.4.camera.fs" />
     <None Include="Source\7.4.camera.vs" />
+    <None Include="Source\fragshader.glsl" />
+    <None Include="Source\vertexshader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png" />

@@ -801,6 +801,9 @@
     <ClInclude Include="include\GL\glut.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\root_directory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -1210,6 +1213,8 @@
     </None>
     <None Include="lib-vc2019\glew32.dll" />
     <None Include="lib-vc2019\glfw3.dll" />
+    <None Include="Source\fragshader.glsl" />
+    <None Include="Source\vertexshader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">
