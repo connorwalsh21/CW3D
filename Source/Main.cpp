@@ -28,7 +28,7 @@ float yaw = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 re
 float pitch = 0.0f;
 float lastX = resX / 2.0;
 float lastY = resY / 2.0;
-float fov = 75.0f;
+float fov = 90.0f;
 
 // Delta time value
 float deltaTime = 0.0f;
@@ -164,7 +164,7 @@ int main()
 
     // Custom file texture loading
     char full[_MAX_PATH];
-    const char* relPath = "resources\\textures\\demon.jpg";
+    const char* relPath = "resources\\textures\\oijosuke.jpg";
     if (_fullpath(full, relPath, _MAX_PATH) != NULL)
         printf("The full path is: %s\n", full);
     else
@@ -219,7 +219,7 @@ int main()
         processInput(window);
 
         // Clear view
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // 0.2f, 0.3f, 0.3f, 1.0f
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Binds textures
@@ -276,6 +276,10 @@ void processInput(GLFWwindow* window)
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraUp;
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraUp;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
