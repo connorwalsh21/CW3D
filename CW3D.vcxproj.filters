@@ -27,9 +27,6 @@
     <ClInclude Include="include\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\shader_m.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\KHR\khrplatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -802,6 +799,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\root_directory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

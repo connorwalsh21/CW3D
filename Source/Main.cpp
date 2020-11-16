@@ -6,13 +6,16 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <stdlib.h>
-#include <shader_m.h>
+#include <shader.h>
 #include <iostream>
+#include <Windows.h>
+#include <string>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
+std::string GetCurrentDirectory();
 
 // Resolution
 const unsigned int resX = 1280;
@@ -24,7 +27,7 @@ glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 bool firstMouse = true;
-float yaw = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+float yaw = -90.0f;
 float pitch = 0.0f;
 float lastX = resX / 2.0;
 float lastY = resY / 2.0;
@@ -73,7 +76,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     // As of now, these strings dont change anything since I have it read from a char array
-    Shader ourShader("7.3.camera.vs", "7.3.camera.fs");
+    Shader myShader("Dont", "matter");
 
     // Vertice data
     float vertices[] = {
@@ -121,7 +124,8 @@ int main()
     };
 
     // World coordinate position
-    glm::vec3 cubePositions[] = {
+    glm::vec3 cubePositions[] =
+    {
         glm::vec3(0.0f, -1.0f, 0.0f),
         glm::vec3(1.0f, -1.0f, 0.0f),
         glm::vec3(2.0f, -1.0f, 0.0f),
@@ -133,7 +137,46 @@ int main()
         glm::vec3(0.0f, -1.0f, 2.0f),
         glm::vec3(1.0f, -1.0f, 2.0f),
         glm::vec3(2.0f, -1.0f, 2.0f),
-        glm::vec3(3.0f, -1.0f, 2.0f)
+        glm::vec3(3.0f, -1.0f, 2.0f),
+
+        glm::vec3(0.0f, -1.0f, 3.0f),
+        glm::vec3(1.0f, -1.0f, 3.0f),
+        glm::vec3(2.0f, -1.0f, 3.0f),
+        glm::vec3(3.0f, -1.0f, 3.0f),
+        glm::vec3(0.0f, -1.0f, 4.0f),
+        glm::vec3(1.0f, -1.0f, 4.0f),
+        glm::vec3(2.0f, -1.0f, 4.0f),
+        glm::vec3(3.0f, -1.0f, 4.0f),
+        glm::vec3(0.0f, -1.0f, 5.0f),
+        glm::vec3(1.0f, -1.0f, 5.0f),
+        glm::vec3(2.0f, -1.0f, 5.0f),
+        glm::vec3(3.0f, -1.0f, 5.0f),
+
+        glm::vec3(-1.0f, -1.0f, 0.0f),
+        glm::vec3(-2.0f, -1.0f, 0.0f),
+        glm::vec3(-3.0f, -1.0f, 0.0f),
+        glm::vec3(-4.0f, -1.0f, 0.0f),
+        glm::vec3(-1.0f, -1.0f, 1.0f),
+        glm::vec3(-2.0f, -1.0f, 1.0f),
+        glm::vec3(-3.0f, -1.0f, 1.0f),
+        glm::vec3(-4.0f, -1.0f, 1.0f),
+        glm::vec3(-1.0f, -1.0f, 2.0f),
+        glm::vec3(-2.0f, -1.0f, 2.0f),
+        glm::vec3(-3.0f, -1.0f, 2.0f),
+        glm::vec3(-4.0f, -1.0f, 2.0f),
+
+        glm::vec3(-1.0f, -1.0f, 3.0f),
+        glm::vec3(-2.0f, -1.0f, 3.0f),
+        glm::vec3(-3.0f, -1.0f, 3.0f),
+        glm::vec3(-4.0f, -1.0f, 3.0f),
+        glm::vec3(-1.0f, -1.0f, 4.0f),
+        glm::vec3(-2.0f, -1.0f, 4.0f),
+        glm::vec3(-3.0f, -1.0f, 4.0f),
+        glm::vec3(-4.0f, -1.0f, 4.0f),
+        glm::vec3(-1.0f, -1.0f, 5.0f),
+        glm::vec3(-2.0f, -1.0f, 5.0f),
+        glm::vec3(-3.0f, -1.0f, 5.0f),
+        glm::vec3(-4.0f, -1.0f, 5.0f)
     };
 
     unsigned int VBO, VAO;
@@ -156,24 +199,19 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     // Mipmaps
     int width, height, nrChannels;
 
-    // Flips texture on Y-axis
+    // Flips textures on Y-axis
     stbi_set_flip_vertically_on_load(true);
 
-    // Custom file texture loading
-    char full[_MAX_PATH];
-    const char* relPath = "resources\\textures\\oijosuke.jpg";
-    if (_fullpath(full, relPath, _MAX_PATH) != NULL)
-        printf("The full path is: %s\n", full);
-    else
-        printf("Invalid path.\n");
+    char texturesPath[_MAX_PATH];
+    strcpy(texturesPath, GetCurrentDirectory().c_str());
+    strcat(texturesPath, "\\resources\\textures\\oijosuke.jpg");
+    std::cout << texturesPath << std::endl;
 
-    // To-do: Make it so it reads texture from build location and the build puts the textures there
-
-    // "C:\\Users\\Connor\\source\\repos\\CW3D\\resources\\textures\\chad.jpg" -- Old path
-    unsigned char* data = stbi_load(full, &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(texturesPath, &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -206,9 +244,9 @@ int main()
     stbi_image_free(data);
 
     // Set textures to an ID
-    ourShader.use();
-    ourShader.setInt("texture1", 0);
-    ourShader.setInt("texture2", 1);
+    myShader.use();
+    myShader.setInt("texture1", 0);
+    myShader.setInt("texture2", 1);
 
     // Main game loop
     while (!glfwWindowShouldClose(window))
@@ -228,27 +266,24 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
-        ourShader.use();
+        myShader.use();
 
         // Passes projection matrix to shader object
         glm::mat4 projection = glm::perspective(glm::radians(fov), (float)resX / (float)resY, 0.1f, 100.0f);
-        ourShader.setMat4("projection", projection);
+        myShader.setMat4("projection", projection);
 
         // Camera/view transformation
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        ourShader.setMat4("view", view);
+        myShader.setMat4("view", view);
 
         // Render loop for objects
         glBindVertexArray(VAO);
-        for (unsigned int i = 0; i < 12; i++)
+        for (unsigned int i = 0; i < 48; i++)
         {
             // Calculate the model matrix for each object and pass it to shader before drawing
-            // Make sure to initialize matrix to identity matrix first
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            //float angle = 20.0f * i;
-            //model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            ourShader.setMat4("model", model);
+            myShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
         glfwSwapBuffers(window);
@@ -323,9 +358,17 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    fov -= (float)yoffset;
+    fov -= (float)yoffset * 5.f;
     if (fov < 1.0f)
         fov = 1.0f;
-    if (fov > 45.0f)
-        fov = 45.0f;
+    if (fov > 90.0f)
+        fov = 90.0f;
+}
+
+std::string GetCurrentDirectory()
+{
+    char b[MAX_PATH];
+    GetModuleFileNameA(NULL, b, MAX_PATH);
+    std::string::size_type loc = std::string(b).find_last_of("\\/");
+    return std::string(b).substr(0, loc);
 }
