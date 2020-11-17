@@ -124,60 +124,17 @@ int main()
     };
 
     // World coordinate position
-    glm::vec3 cubePositions[] =
+    const int size = 256; // This is the constant to change (Must be a perfect square)
+    glm::vec3 cubePositions[size];
+    int count = 0;
+    for (int i = 0; i < sqrt(size); i++)
     {
-        glm::vec3(0.0f, -1.0f, 0.0f),
-        glm::vec3(1.0f, -1.0f, 0.0f),
-        glm::vec3(2.0f, -1.0f, 0.0f),
-        glm::vec3(3.0f, -1.0f, 0.0f),
-        glm::vec3(0.0f, -1.0f, 1.0f),
-        glm::vec3(1.0f, -1.0f, 1.0f),
-        glm::vec3(2.0f, -1.0f, 1.0f),
-        glm::vec3(3.0f, -1.0f, 1.0f),
-        glm::vec3(0.0f, -1.0f, 2.0f),
-        glm::vec3(1.0f, -1.0f, 2.0f),
-        glm::vec3(2.0f, -1.0f, 2.0f),
-        glm::vec3(3.0f, -1.0f, 2.0f),
-
-        glm::vec3(0.0f, -1.0f, 3.0f),
-        glm::vec3(1.0f, -1.0f, 3.0f),
-        glm::vec3(2.0f, -1.0f, 3.0f),
-        glm::vec3(3.0f, -1.0f, 3.0f),
-        glm::vec3(0.0f, -1.0f, 4.0f),
-        glm::vec3(1.0f, -1.0f, 4.0f),
-        glm::vec3(2.0f, -1.0f, 4.0f),
-        glm::vec3(3.0f, -1.0f, 4.0f),
-        glm::vec3(0.0f, -1.0f, 5.0f),
-        glm::vec3(1.0f, -1.0f, 5.0f),
-        glm::vec3(2.0f, -1.0f, 5.0f),
-        glm::vec3(3.0f, -1.0f, 5.0f),
-
-        glm::vec3(-1.0f, -1.0f, 0.0f),
-        glm::vec3(-2.0f, -1.0f, 0.0f),
-        glm::vec3(-3.0f, -1.0f, 0.0f),
-        glm::vec3(-4.0f, -1.0f, 0.0f),
-        glm::vec3(-1.0f, -1.0f, 1.0f),
-        glm::vec3(-2.0f, -1.0f, 1.0f),
-        glm::vec3(-3.0f, -1.0f, 1.0f),
-        glm::vec3(-4.0f, -1.0f, 1.0f),
-        glm::vec3(-1.0f, -1.0f, 2.0f),
-        glm::vec3(-2.0f, -1.0f, 2.0f),
-        glm::vec3(-3.0f, -1.0f, 2.0f),
-        glm::vec3(-4.0f, -1.0f, 2.0f),
-
-        glm::vec3(-1.0f, -1.0f, 3.0f),
-        glm::vec3(-2.0f, -1.0f, 3.0f),
-        glm::vec3(-3.0f, -1.0f, 3.0f),
-        glm::vec3(-4.0f, -1.0f, 3.0f),
-        glm::vec3(-1.0f, -1.0f, 4.0f),
-        glm::vec3(-2.0f, -1.0f, 4.0f),
-        glm::vec3(-3.0f, -1.0f, 4.0f),
-        glm::vec3(-4.0f, -1.0f, 4.0f),
-        glm::vec3(-1.0f, -1.0f, 5.0f),
-        glm::vec3(-2.0f, -1.0f, 5.0f),
-        glm::vec3(-3.0f, -1.0f, 5.0f),
-        glm::vec3(-4.0f, -1.0f, 5.0f)
-    };
+        for (int j = 0; j < sqrt(size); j++)
+        {
+            cubePositions[count] = glm::vec3(i, -1.0f, j);
+            count++;
+        }
+    }
 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -279,7 +236,7 @@ int main()
 
         // Render loop for objects
         glBindVertexArray(VAO);
-        for (unsigned int i = 0; i < 48; i++)
+        for (unsigned int i = 0; i < size; i++)
         {
             // Calculate the model matrix for each object and pass it to shader before drawing
             glm::mat4 model = glm::mat4(1.0f);
