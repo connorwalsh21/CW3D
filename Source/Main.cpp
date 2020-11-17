@@ -124,15 +124,18 @@ int main()
     };
 
     // World coordinate position
-    const int size = 256; // This is the constant to change (Must be a perfect square)
+    const int size = 512; // This is the constant to change (Must be a perfect cube root)
     glm::vec3 cubePositions[size];
     int count = 0;
-    for (int i = 0; i < sqrt(size); i++)
+    for (int i = 0; i < cbrt(size); i++)
     {
-        for (int j = 0; j < sqrt(size); j++)
+        for (int j = -1; j > -cbrt(size); j--)
         {
-            cubePositions[count] = glm::vec3(i, -1.0f, j);
-            count++;
+            for (int k = 0; k < cbrt(size); k++)
+            {
+                cubePositions[count] = glm::vec3(i, j, k);
+                count++;
+            }
         }
     }
 
