@@ -208,7 +208,7 @@ int main()
 
     char texturesPath[_MAX_PATH];
     strcpy(texturesPath, GetCurrentDirectory().c_str());
-    strcat(texturesPath, "\\resources\\textures\\oijosuke.jpg");
+    strcat(texturesPath, "\\resources\\textures\\Tiles.jpg");
     std::cout << texturesPath << std::endl;
 
     unsigned char* data = stbi_load(texturesPath, &width, &height, &nrChannels, 0);
@@ -220,6 +220,7 @@ int main()
     else
     {
         std::cout << "Failed to load texture" << std::endl;
+        return -1;
     }
     stbi_image_free(data);
 
