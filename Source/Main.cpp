@@ -11,11 +11,11 @@
 #include <Windows.h>
 #include <string>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
-std::string GetCurrentDirectory();
+void viewportCallback(GLFWwindow* window, int width, int height);
+void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+void getInput(GLFWwindow* window);
+std::string getCurrentDirectory();
 
 // Resolution
 const unsigned int resX = 1280;
@@ -60,9 +60,9 @@ int main()
     }
 
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetFramebufferSizeCallback(window, viewportCallback);
+    glfwSetCursorPosCallback(window, mouseCallback);
+    glfwSetScrollCallback(window, scrollCallback);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -129,7 +129,7 @@ int main()
     int count = 0;
     for (int i = 0; i < cbrt(size); i++)
     {
-        for (int j = -1; j > -cbrt(size); j--)
+        for (int j = -1; j > -1-cbrt(size); j--)
         {
             for (int k = 0; k < cbrt(size); k++)
             {
@@ -166,8 +166,9 @@ int main()
     // Flips textures on Y-axis
     stbi_set_flip_vertically_on_load(true);
 
+    // Textures code
     char texturesPath[_MAX_PATH];
-    strcpy(texturesPath, GetCurrentDirectory().c_str());
+    strcpy(texturesPath, getCurrentDirectory().c_str());
     strcat(texturesPath, "\\resources\\textures\\Tiles.jpg");
     std::cout << texturesPath << std::endl;
 
@@ -200,7 +201,7 @@ int main()
     }
     else
     {
-        std::cout << "Failed to load texture" << std::endl;
+        std::cout << "Failed to load texture - Although for now, this is supposed to happen!" << std::endl;
     }
     stbi_image_free(data);
 
@@ -215,7 +216,7 @@ int main()
         DeltaTime();
 
         // Handles input
-        processInput(window);
+        getInput(window);
 
         // Clear view
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -258,32 +259,45 @@ int main()
     return 0;
 }
 
-void processInput(GLFWwindow* window)
+void getInput(GLFWwindow* window)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
     float cameraSpeed = 2.5 * deltaTime;
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, true);
+    }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
         cameraPos += cameraSpeed * cameraFront;
+    }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
         cameraPos -= cameraSpeed * cameraFront;
+    }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
         cameraPos += cameraSpeed * cameraUp;
+    }
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    {
         cameraPos -= cameraSpeed * cameraUp;
+    }
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void viewportCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void mouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
     if (firstMouse)
     {
@@ -317,7 +331,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     cameraFront = glm::normalize(front);
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     fov -= (float)yoffset * 5.f;
     if (fov < 1.0f)
@@ -326,7 +340,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
         fov = 90.0f;
 }
 
-std::string GetCurrentDirectory()
+std::string getCurrentDirectory()
 {
     char b[MAX_PATH];
     GetModuleFileNameA(NULL, b, MAX_PATH);
