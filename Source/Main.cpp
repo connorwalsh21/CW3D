@@ -23,7 +23,7 @@ const unsigned int resX = 1280;
 const unsigned int resY = 960;
 
 bool firstMouse = true;
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(3.55f, -3.8f, 12.70f)); // (glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = resX / 2.0;
 float lastY = resY / 2.0;
 
@@ -126,7 +126,10 @@ int main()
         {
             for (int k = 0; k < cbrt(size); k++)
             {
-                cubePositions[count] = glm::vec3(i, j, k);
+                if (i == 0 || i == cbrt(size) - 1 || j == -1 || j == -cbrt(size) || k == 0 || k == cbrt(size))
+                {
+                    cubePositions[count] = glm::vec3(i, j, k);
+                }
                 count++;
             }
         }
@@ -243,6 +246,9 @@ int main()
         }
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        // For meme purposes
+        //std::cout << camera.Position.x << camera.Position.y << camera.Position.z << std::endl;
     }
 
     // Deletes vertex buffer object and vertex array object from GPU VRAM
