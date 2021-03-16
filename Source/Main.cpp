@@ -68,8 +68,7 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    // As of now, these strings dont change anything since I have it read from a char array
-    Shader myShader("Dont", "matter");
+    Shader myShader;
 
     // Vertice data
     float vertices[] = {
