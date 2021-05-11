@@ -1215,6 +1215,10 @@
     <None Include="lib-vc2019\glfw3.dll" />
     <None Include="Source\fragshader.glsl" />
     <None Include="Source\vertexshader.glsl" />
+    <None Include="include\fragshader.fs" />
+    <None Include="include\vertexshader.vs" />
+    <None Include="include\skyboxfrag.fs" />
+    <None Include="include\skyboxvertex.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">

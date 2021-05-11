@@ -408,6 +408,7 @@
     <ClInclude Include="include\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="include\fragshader.fs" />
     <None Include="include\glm\detail\func_common.inl" />
     <None Include="include\glm\detail\func_common_simd.inl" />
     <None Include="include\glm\detail\func_exponential.inl" />
@@ -542,6 +543,9 @@
     <None Include="include\glm\gtx\vector_angle.inl" />
     <None Include="include\glm\gtx\vector_query.inl" />
     <None Include="include\glm\gtx\wrap.inl" />
+    <None Include="include\skyboxfrag.fs" />
+    <None Include="include\skyboxvertex.vs" />
+    <None Include="include\vertexshader.vs" />
     <None Include="lib-vc2019\glew32.dll" />
     <None Include="lib-vc2019\glfw3.dll" />
     <None Include="README.md" />
