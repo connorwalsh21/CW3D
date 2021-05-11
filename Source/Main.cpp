@@ -12,6 +12,7 @@
 #include <Windows.h>
 #include <string>
 
+void deltaTime();
 void viewportCallback(GLFWwindow* window, int width, int height);
 void mouseCallback(GLFWwindow* window, double xpos, double ypos);
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
@@ -28,15 +29,8 @@ float lastX = resX / 2.0;
 float lastY = resY / 2.0;
 
 // Delta time value
-float deltaTime = 0.0f;
+float dt = 0.0f;
 float lastFrame = 0.0f;
-
-void DeltaTime()
-{
-    float currentFrame = glfwGetTime();
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
-}
 
 int main()
 {
@@ -208,7 +202,7 @@ int main()
     // Main game loop
     while (!glfwWindowShouldClose(window))
     {
-        DeltaTime();
+        deltaTime();
 
         // Handles input
         getInput(window);
@@ -265,28 +259,35 @@ void getInput(GLFWwindow* window)
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(FORWARD, deltaTime);
+        camera.HandleKeyboard(FORWARD, dt);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(BACKWARD, deltaTime);
+        camera.HandleKeyboard(BACKWARD, dt);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(LEFT, deltaTime);
+        camera.HandleKeyboard(LEFT, dt);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(RIGHT, deltaTime);
+        camera.HandleKeyboard(RIGHT, dt);
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(UP, deltaTime);
+        camera.HandleKeyboard(UP, dt);
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(DOWN, deltaTime);
+        camera.HandleKeyboard(DOWN, dt);
     }
+}
+
+void deltaTime()
+{
+    float currentFrame = glfwGetTime();
+    dt = currentFrame - lastFrame;
+    lastFrame = currentFrame;
 }
 
 void viewportCallback(GLFWwindow* window, int width, int height)
