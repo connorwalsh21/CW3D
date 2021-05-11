@@ -28,7 +28,7 @@ const unsigned int resY = 960;
 
 // Camera
 bool firstMouse = true;
-Camera camera(glm::vec3(3.55f, -3.8f, 12.70f)); // (glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(3.55f, -3.8f, 12.70f));
 float lastX = resX / 2.0;
 float lastY = resY / 2.0;
 
@@ -66,8 +66,8 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    Shader myShader("include/vertexshader.vs\0", "include/fragshader.fs\0");
-    Shader skyboxShader("include/skyboxvertex.vs\0", "include/skyboxfrag.fs\0");
+    Shader myShader("resources/shaders/vertexshader.vs\0", "resources/shaders/fragshader.fs\0");
+    Shader skyboxShader("resources/shaders/skyboxvertex.vs\0", "resources/shaders/skyboxfrag.fs\0");
 
     // Vertice data
     float vertices[] = {
