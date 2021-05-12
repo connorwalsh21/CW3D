@@ -216,7 +216,7 @@ int main()
     // Textures code
     char texturesPath[_MAX_PATH];
     strcpy(texturesPath, getCurrentDirectory().c_str());
-    strcat(texturesPath, "\\resources\\textures\\demon.jpg");
+    strcat(texturesPath, "\\resources\\textures\\flat.jpg");
     std::cout << texturesPath << std::endl;
 
     unsigned char* data = stbi_load(texturesPath, &width, &height, &nrChannels, 0);
