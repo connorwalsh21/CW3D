@@ -1219,6 +1219,14 @@
     <None Include="include\vertexshader.vs" />
     <None Include="include\skyboxfrag.fs" />
     <None Include="include\skyboxvertex.vs" />
+    <None Include="resources\shaders\fragshader.fs" />
+    <None Include="resources\shaders\lightsource.fs" />
+    <None Include="resources\shaders\lightsource.vs" />
+    <None Include="resources\shaders\material.fs" />
+    <None Include="resources\shaders\material.vs" />
+    <None Include="resources\shaders\skyboxvertex.vs" />
+    <None Include="resources\shaders\skyboxfrag.fs" />
+    <None Include="resources\shaders\vertexshader.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">

@@ -21,10 +21,16 @@ void getInput(GLFWwindow* window);
 std::string getCurrentDirectory();
 unsigned int loadTexture(const char* path);
 unsigned int loadCubemap(std::vector<std::string> faces);
+void toggleFullscreen(GLFWwindow* window);
+
+glm::vec3 lightPos(3.0f, -4.0f, 4.0f);
 
 // Resolution
-const unsigned int resX = 1280;
-const unsigned int resY = 960;
+const unsigned int defaultResX = 1280;
+const unsigned int defaultResY = 960;
+unsigned int resX = 1280;
+unsigned int resY = 960;
+bool FULLSCREEN = false;
 
 // Camera
 bool firstMouse = true;
@@ -50,7 +56,6 @@ int main()
         glfwTerminate();
         return -1;
     }
-
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, viewportCallback);
     glfwSetCursorPosCallback(window, mouseCallback);
@@ -66,52 +71,53 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    Shader myShader("resources/shaders/vertexshader.vs\0", "resources/shaders/fragshader.fs\0");
+    Shader myShader("resources/shaders/material.vs\0", "resources/shaders/material.fs\0");
     Shader skyboxShader("resources/shaders/skyboxvertex.vs\0", "resources/shaders/skyboxfrag.fs\0");
+    Shader lightSourceShader("resources/shaders/lightsource.vs\0", "resources/shaders/lightsource.fs\0");
 
     // Vertice data
     float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
 
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f,  1.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
     };
 
     float skyboxVertices[] = {
@@ -183,11 +189,24 @@ int main()
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    
+
+    // Light source
+    unsigned int lightCubeVAO;
+    glGenVertexArrays(1, &lightCubeVAO);
+    glBindVertexArray(lightCubeVAO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
 
     // Skybox
     unsigned int skyboxVAO, skyboxVBO;
@@ -215,49 +234,34 @@ int main()
 
     // Textures code
     char texturesPath[_MAX_PATH];
+    char texturesPathSpec[_MAX_PATH];
     strcpy(texturesPath, getCurrentDirectory().c_str());
-    strcat(texturesPath, "\\resources\\textures\\flat.jpg");
-    std::cout << texturesPath << std::endl;
+    strcpy(texturesPathSpec, getCurrentDirectory().c_str());
+    strcat(texturesPath, "\\resources\\textures\\container2.png");
+    strcat(texturesPathSpec, "\\resources\\textures\\container2_specular.png");
 
-    unsigned char* data = stbi_load(texturesPath, &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-        return -1;
-    }
-    stbi_image_free(data);
-    
+    unsigned int diffuse = loadTexture(texturesPath);
+    unsigned int specular = loadTexture(texturesPathSpec);
+
     std::vector<std::string> faces
     {
-        "\\resources\\textures\\skybox\\right.jpg",
-        "\\resources\\textures\\skybox\\left.jpg",
-        "\\resources\\textures\\skybox\\top.jpg",
-        "\\resources\\textures\\skybox\\bottom.jpg",
-        "\\resources\\textures\\skybox\\front.jpg",
-        "\\resources\\textures\\skybox\\back.jpg"
+        "\\resources\\textures\\skybox\\spaceart.jpg",
+        "\\resources\\textures\\skybox\\spaceart.jpg",
+        "\\resources\\textures\\skybox\\spaceart.jpg",
+        "\\resources\\textures\\skybox\\spaceart.jpg",
+        "\\resources\\textures\\skybox\\spaceart.jpg",
+        "\\resources\\textures\\skybox\\spaceart.jpg"
     };
     unsigned int cubemapTexture = loadCubemap(faces);
 
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
     // Set textures to an ID
     myShader.use();
-    myShader.setInt("texture1", 0);
-    myShader.setInt("texture2", 1);
+    myShader.setInt("material.diffuse", 0);
+    myShader.setInt("material.specular", 1);
 
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
-
+    
     // Main game loop
     while (!glfwWindowShouldClose(window))
     {
@@ -272,11 +276,18 @@ int main()
 
         // Binds textures
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
+        glBindTexture(GL_TEXTURE_2D, diffuse);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
+        glBindTexture(GL_TEXTURE_2D, specular);
 
+        // Shader
         myShader.use();
+        myShader.setVec3("light.position", lightPos);
+        myShader.setVec3("viewPos", camera.Position);
+        myShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+        myShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+        myShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        myShader.setFloat("material.shininess", 64.0f);
 
         // Passes projection matrix to shader object
         glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)resX / (float)resY, 0.1f, 100.0f);
@@ -287,7 +298,7 @@ int main()
         myShader.setMat4("view", view);
 
         // Render loop for objects
-        glBindVertexArray(VAO);
+        glBindVertexArray(VAO); // Change this for lighting VAO
         for (unsigned int i = 0; i < size; i++)
         {
             // Calculate the model matrix for each object and pass it to shader before drawing
@@ -296,6 +307,20 @@ int main()
             myShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
+        // Configure light source shader
+        lightSourceShader.use();
+        lightSourceShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        lightSourceShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        lightSourceShader.setMat4("projection", projection);
+        lightSourceShader.setMat4("view", view);
+
+        // Render light source
+        glm::mat4 lightModel = glm::mat4(1.0f);
+        lightModel = glm::translate(lightModel, lightPos);
+        lightSourceShader.setMat4("model", lightModel);
+        glBindVertexArray(lightCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // Render loop for skybox
         glDepthFunc(GL_LEQUAL);
@@ -352,6 +377,10 @@ void getInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
         camera.HandleKeyboard(DOWN, dt);
+    }
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+    {
+        toggleFullscreen(window);
     }
 }
 
@@ -466,4 +495,20 @@ unsigned int loadCubemap(std::vector<std::string> faces)
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     stbi_set_flip_vertically_on_load(true);
     return id;
+}
+
+void toggleFullscreen(GLFWwindow* window)
+{
+    GLFWvidmode* mode;
+    mode = (GLFWvidmode*)glfwGetVideoMode(glfwGetPrimaryMonitor());
+    if (!FULLSCREEN)
+    {
+        glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, resX = mode->width, resY = mode->height, mode->refreshRate);
+        FULLSCREEN = !FULLSCREEN;
+    }
+    else
+    {
+        glfwSetWindowMonitor(window, nullptr, 100, 100, resX = defaultResX, resY = defaultResY, mode->refreshRate);
+        FULLSCREEN = !FULLSCREEN;
+    }
 }

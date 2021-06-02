@@ -549,6 +549,14 @@
     <None Include="lib-vc2019\glew32.dll" />
     <None Include="lib-vc2019\glfw3.dll" />
     <None Include="README.md" />
+    <None Include="resources\shaders\fragshader.fs" />
+    <None Include="resources\shaders\lightsource.fs" />
+    <None Include="resources\shaders\lightsource.vs" />
+    <None Include="resources\shaders\material.fs" />
+    <None Include="resources\shaders\material.vs" />
+    <None Include="resources\shaders\skyboxfrag.fs" />
+    <None Include="resources\shaders\skyboxvertex.vs" />
+    <None Include="resources\shaders\vertexshader.vs" />
     <None Include="Source\7.4.camera.fs" />
     <None Include="Source\7.4.camera.vs" />
     <None Include="Source\fragshader.glsl" />
