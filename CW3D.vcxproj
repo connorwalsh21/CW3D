@@ -568,7 +568,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\glm\detail\glm.cpp" />
-    <ClCompile Include="Source\glad.c" />
+    <ClCompile Include="Source\glad.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\stb_image.cpp" />
   </ItemGroup>

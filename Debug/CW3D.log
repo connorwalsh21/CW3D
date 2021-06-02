@@ -1,4 +1,8 @@
-﻿  Main.cpp
+﻿  glm.cpp
+  glad.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+C:\Users\Connor\source\repos\CW3D\include\glad\glad.h(32): message : see previous definition of 'APIENTRY'
+  Main.cpp
 C:\Users\Connor\source\repos\CW3D\include\shader.h(68,40): warning C4101: 'e': unreferenced local variable
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
 C:\Users\Connor\source\repos\CW3D\include\glad\glad.h(32): message : see previous definition of 'APIENTRY'
@@ -16,5 +20,7 @@ C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(409,19): warning C4244: 'initi
 C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(411,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(412,13): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Users\Connor\source\repos\CW3D\Source\Main.cpp(419,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  stb_image.cpp
+  Generating Code...
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   CW3D.vcxproj -> C:\Users\Connor\source\repos\CW3D\Debug\CW3D.exe
