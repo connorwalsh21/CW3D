@@ -12,6 +12,7 @@
 #include <Windows.h>
 #include <string>
 #include <filesystem.h>
+#include "model.h"
 
 void deltaTime();
 void viewportCallback(GLFWwindow* window, int width, int height);
@@ -164,6 +165,9 @@ int main()
          1.0f, -1.0f,  1.0f
     };
 
+    // Load model
+    Model ourModel("resources/models/backpack/backpack.obj");
+
     // World coordinate position
     const int size = 512; // This is the constant to change (Must be a perfect cube root)
     glm::vec3 cubePositions[size];
@@ -235,10 +239,10 @@ int main()
     // Textures code
     char texturesPath[_MAX_PATH];
     char texturesPathSpec[_MAX_PATH];
-    strcpy(texturesPath, getCurrentDirectory().c_str());
-    strcpy(texturesPathSpec, getCurrentDirectory().c_str());
-    strcat(texturesPath, "\\resources\\textures\\container2.png");
-    strcat(texturesPathSpec, "\\resources\\textures\\container2_specular.png");
+    strcpy_s(texturesPath, getCurrentDirectory().c_str());
+    strcpy_s(texturesPathSpec, getCurrentDirectory().c_str());
+    strcat_s(texturesPath, "\\resources\\textures\\container2.png");
+    strcat_s(texturesPathSpec, "\\resources\\textures\\container2_specular.png");
 
     unsigned int diffuse = loadTexture(texturesPath);
     unsigned int specular = loadTexture(texturesPathSpec);
@@ -307,6 +311,13 @@ int main()
             myShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
+        // Render the loaded model
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(5.0f, -5.0f, 3.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));	// it's a bit too big for our scene, so scale it down
+        myShader.setMat4("model", model);
+        ourModel.Draw(myShader);
 
         // Configure light source shader
         lightSourceShader.use();
@@ -475,8 +486,8 @@ unsigned int loadCubemap(std::vector<std::string> faces)
     for (unsigned int i = 0; i < faces.size(); i++)
     {
         char skyboxPath[_MAX_PATH];
-        strcpy(skyboxPath, getCurrentDirectory().c_str());
-        strcat(skyboxPath, faces[i].c_str());
+        strcpy_s(skyboxPath, getCurrentDirectory().c_str());
+        strcat_s(skyboxPath, faces[i].c_str());
         unsigned char* data = stbi_load(skyboxPath, &x, &y, &numChannel, 0);
         if (data)
         {

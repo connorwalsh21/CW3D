@@ -804,6 +804,12 @@
     <ClInclude Include="include\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -1227,6 +1233,8 @@
     <None Include="resources\shaders\skyboxvertex.vs" />
     <None Include="resources\shaders\skyboxfrag.fs" />
     <None Include="resources\shaders\vertexshader.vs" />
+    <None Include="resources\shaders\model_loading.vs" />
+    <None Include="resources\shaders\model_loading.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">
