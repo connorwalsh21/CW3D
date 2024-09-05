@@ -84,7 +84,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Connor\Documents\Visual Studio 2022\Libraries\assimp\include;C:\Users\Connor\source\repos\CW3D\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Connor\Documents\Visual Studio 2022\Libraries\json-develop\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\assimp\include;C:\Users\Connor\source\repos\CW3D\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Connor\Documents\Visual Studio 2022\Libraries\assimp\include;C:\Users\Connor\source\repos\CW3D\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Connor\Documents\Visual Studio 2022\Libraries\json-develop\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\assimp\include;C:\Users\Connor\source\repos\CW3D\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -118,7 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Connor\Documents\Visual Studio 2022\Libraries\assimp\include;C:\Users\Connor\source\repos\CW3D\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Connor\Documents\Visual Studio 2022\Libraries\json-develop\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\assimp\include;C:\Users\Connor\source\repos\CW3D\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Connor\Documents\Visual Studio 2022\Libraries\assimp\include;C:\Users\Connor\source\repos\CW3D\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Connor\Documents\Visual Studio 2022\Libraries\json-develop\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\assimp\include;C:\Users\Connor\source\repos\CW3D\include;C:\Users\Connor\Documents\Visual Studio 2022\Libraries\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -153,7 +153,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\camera.h" />
+    <ClInclude Include="include\nlohmann\adl_serializer.hpp" />
+    <ClInclude Include="include\nlohmann\byte_container_with_subtype.hpp" />
+    <ClInclude Include="include\nlohmann\json.hpp" />
+    <ClInclude Include="include\nlohmann\json_fwd.hpp" />
+    <ClInclude Include="include\nlohmann\ordered_map.hpp" />
+    <ClInclude Include="Source\camera.h" />
     <ClInclude Include="include\filesystem.h" />
     <ClInclude Include="include\glad\glad.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
@@ -413,7 +418,10 @@
     <ClInclude Include="include\GL\wglew.h" />
     <ClInclude Include="include\KHR\khrplatform.h" />
     <ClInclude Include="include\root_directory.h" />
-    <ClInclude Include="include\shader.h" />
+    <ClInclude Include="Source\collision.h" />
+    <ClInclude Include="Source\gameobject.hpp" />
+    <ClInclude Include="Source\serialization.hpp" />
+    <ClInclude Include="Source\shader.h" />
     <ClInclude Include="include\shader_s.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="Source\mesh.h" />
@@ -561,6 +569,7 @@
     <None Include="lib-vc2019\glew32.dll" />
     <None Include="lib-vc2019\glfw3.dll" />
     <None Include="README.md" />
+    <None Include="Source\level1.json" />
     <None Include="resources\shaders\fragshader.fs" />
     <None Include="resources\shaders\lightsource.fs" />
     <None Include="resources\shaders\lightsource.vs" />
@@ -582,8 +591,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\glm\detail\glm.cpp" />
+    <ClCompile Include="Source\collision.cpp" />
     <ClCompile Include="Source\glad.cpp" />
-    <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\level_manager.cpp" />
+    <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>

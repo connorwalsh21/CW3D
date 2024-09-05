@@ -1,0 +1,31 @@
+{
+  "gameObjects": [
+    {
+      "type": "Enemy",
+      "position": [ 1.0, 2.0, 3.0 ],
+      "size": [ 1.5, 1.5, 1.5 ],
+      "radius": 0.75,
+      "texture": "enemy_texture.png",
+      "color": [ 1.0, 0.0, 0.0 ],
+      "scale": [ 1.0, 1.0, 1.0 ]
+    },
+    {
+      "type": "Player",
+      "position": [ 0.0, 1.0, 0.0 ],
+      "size": [ 1.0, 2.0, 1.0 ],
+      "radius": 0.5,
+      "texture": "player_texture.png",
+      "color": [ 0.0, 0.0, 1.0 ],
+      "scale": [ 1.0, 1.0, 1.0 ]
+    },
+    {
+      "type": "PowerUp",
+      "position": [ 5.0, 0.0, -2.0 ],
+      "size": [ 0.5, 0.5, 0.5 ],
+      "radius": 0.2,
+      "texture": "powerup_texture.png",
+      "color": [ 0.0, 1.0, 0.0 ],
+      "scale": [ 1.0, 1.0, 1.0 ]
+    }
+  ]
+}

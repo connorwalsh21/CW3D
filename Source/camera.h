@@ -23,6 +23,7 @@ const float PITCH = 0.0f;
 const float SPEED = 5.f;
 const float SENSITIVITY = 0.1f;
 const float FOV = 90.0f;
+const float SprintMultiplier = 2.0f;
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera
@@ -68,9 +69,10 @@ public:
     }
 
     // Keyboard Input
-    void HandleKeyboard(Direction dir, float deltaTime)
+    void HandleKeyboard(Direction dir, float deltaTime, bool isSprinting)
     {
-        float velocity = MovementSpeed * deltaTime;
+        float currentSpeed = isSprinting ? MovementSpeed * SprintMultiplier : MovementSpeed;
+        float velocity = currentSpeed * deltaTime;
         if (dir == FORWARD)
             Position += Front * velocity;
         if (dir == BACKWARD)

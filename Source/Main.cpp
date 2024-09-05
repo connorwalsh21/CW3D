@@ -1,18 +1,20 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
-#include <camera.h>
+#include "camera.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <stdlib.h>
-#include <shader.h>
+#include "shader.h"
 #include <iostream>
 #include <Windows.h>
 #include <string>
 #include <filesystem.h>
 #include "model.h"
+#include "level_manager.cpp"
+#include "gameobject.hpp"
 
 void deltaTime();
 void viewportCallback(GLFWwindow* window, int width, int height);
@@ -43,8 +45,22 @@ float lastY = resY / 2.0;
 float dt = 0.0f;
 float lastFrame = 0.0f;
 
+
+
 int main()
 {
+    LevelManager levelManager;
+    // Test loading level
+    try {
+        levelManager.loadFromFile("level1.json");
+        levelManager.displayGameObjects();
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -361,39 +377,43 @@ int main()
 
 void getInput(GLFWwindow* window)
 {
+    // Check if the shift key is pressed for sprinting
+    bool isSprinting = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS;
+
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(FORWARD, dt);
+        camera.HandleKeyboard(FORWARD, dt, isSprinting);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(BACKWARD, dt);
+        camera.HandleKeyboard(BACKWARD, dt, isSprinting);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(LEFT, dt);
+        camera.HandleKeyboard(LEFT, dt, isSprinting);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(RIGHT, dt);
+        camera.HandleKeyboard(RIGHT, dt, isSprinting);
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(UP, dt);
+        camera.HandleKeyboard(UP, dt, isSprinting);
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(DOWN, dt);
+        camera.HandleKeyboard(DOWN, dt, isSprinting);
     }
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
     {
         toggleFullscreen(window);
     }
 }
+
 
 void deltaTime()
 {
