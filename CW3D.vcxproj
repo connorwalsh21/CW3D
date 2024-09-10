@@ -420,6 +420,7 @@
     <ClInclude Include="include\root_directory.h" />
     <ClInclude Include="Source\collision.h" />
     <ClInclude Include="Source\gameobject.hpp" />
+    <ClInclude Include="Source\renderable_object.hpp" />
     <ClInclude Include="Source\serialization.hpp" />
     <ClInclude Include="Source\shader.h" />
     <ClInclude Include="include\shader_s.h" />
@@ -569,6 +570,8 @@
     <None Include="lib-vc2019\glew32.dll" />
     <None Include="lib-vc2019\glfw3.dll" />
     <None Include="README.md" />
+    <None Include="resources\shaders\lighting.fs" />
+    <None Include="resources\shaders\lighting.vs" />
     <None Include="Source\level1.json" />
     <None Include="resources\shaders\fragshader.fs" />
     <None Include="resources\shaders\lightsource.fs" />

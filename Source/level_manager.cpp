@@ -67,4 +67,60 @@ public:
     const std::vector<GameObject>& getGameObjects() const {
         return gameObjects;
     }
+
+    void generateFile() {
+        const int size = 512; // This is the constant to change (Must be a perfect cube root)
+        glm::vec3 cubePositions[size];
+        std::vector<GameObject> gameObjects;
+        int count = 0;
+
+        // Generate positions
+        for (int i = 0; i < cbrt(size); i++) {
+            for (int j = -1; j > -1 - cbrt(size); j--) {
+                for (int k = 0; k < cbrt(size); k++) {
+                    if (i == 0 || i == cbrt(size) - 1 || j == -1 || j == -cbrt(size) || k == 0 || k == cbrt(size)) {
+                        glm::vec3 position = glm::vec3(i, j, k);
+                        cubePositions[count] = position;
+
+                        // Create a GameObject instance
+                        GameObject cube;
+
+                        // Use setters to assign values
+                        cube.setType("cube");
+                        cube.setPosition(position);
+                        cube.setSize(glm::vec3(1.0f, 1.0f, 1.0f)); // Default size (can be modified)
+                        cube.setRadius(0.5f);                      // Example value, not used for cubes
+                        cube.setTexture("container2.png");    // Default texture
+                        cube.setColor(glm::vec3(1.0f, 1.0f, 1.0f)); // Default color (white)
+                        cube.setScale(glm::vec3(1.0f, 1.0f, 1.0f)); // Default scale
+
+                        // Add to the gameObjects vector
+                        gameObjects.push_back(cube);
+                    }
+                    count++;
+                }
+            }
+        }
+
+        nlohmann::json jsonObjects;
+
+        // Convert each GameObject to JSON and add to the JSON array
+        for (const auto& gameObject : gameObjects) {
+            jsonObjects["gameObjects"].push_back(gameObject);
+        }
+
+        // Write the JSON data to a file
+        
+        std::ofstream file("level2.json");
+        if (file.is_open()) {
+            file << jsonObjects.dump(4); // Pretty-print with indentation of 4 spaces
+            file.close();
+            std::cout << "Game objects saved to " << "level2.json" << " successfully.\n";
+        }
+        else {
+            std::cerr << "Error: Could not open file " << "level2.json" << " for writing.\n";
+        }
+
+
+    }
 };

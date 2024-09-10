@@ -1,4 +1,3 @@
-// gameobject.hpp
 #pragma once
 #include <string>
 #include <vector>

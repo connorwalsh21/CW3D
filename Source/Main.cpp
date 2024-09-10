@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 #include "camera.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -25,6 +24,7 @@ std::string getCurrentDirectory();
 unsigned int loadTexture(const char* path);
 unsigned int loadCubemap(std::vector<std::string> faces);
 void toggleFullscreen(GLFWwindow* window);
+void clearView();
 
 glm::vec3 lightPos(3.0f, -4.0f, 4.0f);
 
@@ -45,21 +45,19 @@ float lastY = resY / 2.0;
 float dt = 0.0f;
 float lastFrame = 0.0f;
 
-
-
 int main()
 {
+    std::vector<GameObject> gameObjects;
     LevelManager levelManager;
     // Test loading level
     try {
-        levelManager.loadFromFile("level1.json");
-        levelManager.displayGameObjects();
+        levelManager.loadFromFile("level2.json");
+        gameObjects = levelManager.getGameObjects();
+        //levelManager.displayGameObjects();
     }
     catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
-
-
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -183,26 +181,7 @@ int main()
 
     // Load model
     Model ourModel("resources/models/backpack/backpack.obj");
-
-    // World coordinate position
-    const int size = 512; // This is the constant to change (Must be a perfect cube root)
-    glm::vec3 cubePositions[size];
-    int count = 0;
-    for (int i = 0; i < cbrt(size); i++)
-    {
-        for (int j = -1; j > -1 - cbrt(size); j--)
-        {
-            for (int k = 0; k < cbrt(size); k++)
-            {
-                if (i == 0 || i == cbrt(size) - 1 || j == -1 || j == -cbrt(size) || k == 0 || k == cbrt(size))
-                {
-                    cubePositions[count] = glm::vec3(i, j, k);
-                }
-                count++;
-            }
-        }
-    }
-
+    
     // Cube
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -226,7 +205,6 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
 
     // Skybox
     unsigned int skyboxVAO, skyboxVBO;
@@ -291,8 +269,7 @@ int main()
         getInput(window);
 
         // Clear view
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        clearView();
 
         // Binds textures
         glActiveTexture(GL_TEXTURE0);
@@ -317,24 +294,6 @@ int main()
         glm::mat4 view = camera.GetViewMatrix();
         myShader.setMat4("view", view);
 
-        // Render loop for objects
-        glBindVertexArray(VAO); // Change this for lighting VAO
-        for (unsigned int i = 0; i < size; i++)
-        {
-            // Calculate the model matrix for each object and pass it to shader before drawing
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            myShader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-
-        // Render the loaded model
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(5.0f, -5.0f, 3.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));	// it's a bit too big for our scene, so scale it down
-        myShader.setMat4("model", model);
-        ourModel.Draw(myShader);
-
         // Configure light source shader
         lightSourceShader.use();
         lightSourceShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
@@ -342,12 +301,44 @@ int main()
         lightSourceShader.setMat4("projection", projection);
         lightSourceShader.setMat4("view", view);
 
-        // Render light source
-        glm::mat4 lightModel = glm::mat4(1.0f);
-        lightModel = glm::translate(lightModel, lightPos);
-        lightSourceShader.setMat4("model", lightModel);
-        glBindVertexArray(lightCubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // Render loop for objects
+        for (unsigned int i = 0; i < gameObjects.size(); i++) {
+            const GameObject& obj = gameObjects[i];
+
+            if (obj.getType() == "cube") {
+                myShader.use(); // Activate shader program for cubes
+                glBindVertexArray(VAO);
+
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, obj.getPosition());
+                myShader.setMat4("model", model);
+
+                glDrawArrays(GL_TRIANGLES, 0, 36); // Draw cube
+
+            }
+            else if (obj.getType() == "light") {
+                lightSourceShader.use(); // Activate shader program for light source
+                glBindVertexArray(lightCubeVAO);
+
+                glm::mat4 lightModel = glm::mat4(1.0f);
+                lightModel = glm::translate(lightModel, lightPos);
+                lightSourceShader.setMat4("model", lightModel);
+
+                glDrawArrays(GL_TRIANGLES, 0, 36); // Draw light source
+            }
+            else {
+                std::cerr << "Unknown object type: " << obj.getType() << std::endl;
+            }
+        }
+
+        myShader.use();
+        // Render the loaded model
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(5.0f, -5.0f, 3.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));	// it's a bit too big for our scene, so scale it down
+        myShader.setMat4("model", model);
+        ourModel.Draw(myShader);
+
 
         // Render loop for skybox
         glDepthFunc(GL_LEQUAL);
@@ -542,4 +533,10 @@ void toggleFullscreen(GLFWwindow* window)
         glfwSetWindowMonitor(window, nullptr, 100, 100, resX = defaultResX, resY = defaultResY, mode->refreshRate);
         FULLSCREEN = !FULLSCREEN;
     }
+}
+
+void clearView()
+{
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

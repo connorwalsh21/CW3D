@@ -834,6 +834,9 @@
     <ClInclude Include="Source\gameobject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\renderable_object.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -1260,6 +1263,8 @@
     <None Include="resources\shaders\model_loading.vs" />
     <None Include="resources\shaders\model_loading.fs" />
     <None Include="Source\level1.json" />
+    <None Include="resources\shaders\lighting.fs" />
+    <None Include="resources\shaders\lighting.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\awesomeface.png">
