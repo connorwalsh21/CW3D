@@ -63,6 +63,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_SAMPLES, 8);
 
     GLFWwindow* window = glfwCreateWindow(resX, resY, "CW3D", NULL, NULL);
     if (window == NULL)
@@ -85,6 +86,7 @@ int main()
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
 
     Shader myShader("resources/shaders/material.vs\0", "resources/shaders/material.fs\0");
     Shader skyboxShader("resources/shaders/skyboxvertex.vs\0", "resources/shaders/skyboxfrag.fs\0");
