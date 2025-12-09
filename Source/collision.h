@@ -1,27 +1,15 @@
-#ifndef COLLISION_H
-#define COLLISION_H
+#pragma once
 
-#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
+#include <vector>
+#include "gameobject.hpp"
+#include "camera.h"
 
-// Axis-Aligned Bounding Box (AABB) structure
-struct AABB {
-    glm::vec3 min; // Minimum corner of the box
-    glm::vec3 max; // Maximum corner of the box
-    glm::vec3 velocity; // Velocity of the AABB
-};
-
-// Sphere structure
-struct Sphere {
-    glm::vec3 center; // Center of the sphere
-    float radius;     // Radius of the sphere
-    glm::vec3 velocity; // Velocity of the sphere
-};
-
-// Function prototypes
-bool checkAABBCollision(const AABB& box1, const AABB& box2);
-bool checkSphereCollision(const Sphere& sphere1, const Sphere& sphere2);
-bool checkCubeSphereCollision(const AABB& box, const Sphere& sphere);
-void handleCollisionAndStop(Sphere& sphere, const AABB& box);
-void updateSphere(Sphere& sphere, float deltaTime);
-
-#endif
+// Resolve collisions between a vertical capsule (player) and cube colliders (GameObjects of type "cube").
+// The capsule is centered on the camera position and aligned with the Y axis.
+// capsuleHalfHeight is the half-distance from the capsule center to each sphere-cap end.
+// capsuleRadius is the capsule radius.
+// Outputs:
+// - outCorrection: a translation vector that should be applied to the camera position to separate from colliders.
+// - outGrounded: set to true if the capsule is considered on the ground after resolution (a collision pushed it up).
+void resolveCollisions(Camera& camera, const std::vector<GameObject>& objects, glm::vec3& outCorrection, bool& outGrounded, float capsuleHalfHeight = 0.9f, float capsuleRadius = 0.5f);

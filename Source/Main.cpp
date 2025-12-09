@@ -14,6 +14,7 @@
 #include "model.h"
 #include "level_manager.cpp"
 #include "gameobject.hpp"
+#include "collision.h"
 
 void deltaTime();
 void viewportCallback(GLFWwindow* window, int width, int height);
@@ -40,6 +41,19 @@ bool firstMouse = true;
 Camera camera(glm::vec3(3.55f, -3.8f, 12.70f));
 float lastX = resX / 2.0;
 float lastY = resY / 2.0;
+
+// Player physics globals
+glm::vec3 playerVelocity = glm::vec3(0.0f);
+const float GRAVITY = -9.81f; // meters per second squared
+const float JUMP_SPEED = 5.0f; // initial jump upward velocity
+bool playerGrounded = false;
+const float CAPSULE_HALF_HEIGHT = 0.9f;
+const float CAPSULE_RADIUS = 0.5f;
+
+// Gravity toggle
+bool gravityEnabled = true;
+// Debounce state for G key
+bool gKeyPressedLastFrame = false;
 
 // Delta time value
 float dt = 0.0f;
@@ -263,12 +277,36 @@ int main()
     skyboxShader.setInt("skybox", 0);
     
     // Main game loop
+    bool playerStartSet = false; // set camera start from level when we encounter a "player" object
     while (!glfwWindowShouldClose(window))
     {
         deltaTime();
 
         // Handles input
         getInput(window);
+
+        // --- Player physics: vertical only (gravity & jump) ---
+        // Integrate gravity
+        if (gravityEnabled && !playerGrounded) {
+            playerVelocity.y += GRAVITY * dt;
+        }
+
+        // Apply vertical velocity
+        camera.Position.y += playerVelocity.y * dt;
+
+        // Resolve collisions (player capsule vs cube colliders)
+        glm::vec3 collisionCorrection(0.0f);
+        bool grounded = false;
+        resolveCollisions(camera, gameObjects, collisionCorrection, grounded, CAPSULE_HALF_HEIGHT, CAPSULE_RADIUS);
+
+        // Apply collision correction
+        camera.Position += collisionCorrection;
+
+        // If grounded and moving downward, stop vertical velocity
+        if (grounded && playerVelocity.y < 0.0f) {
+            playerVelocity.y = 0.0f;
+        }
+        playerGrounded = grounded;
 
         // Clear view
         clearView();
@@ -307,6 +345,15 @@ int main()
         for (unsigned int i = 0; i < gameObjects.size(); i++) {
             const GameObject& obj = gameObjects[i];
 
+            // If the level contains a player start object, use it to set the camera start position (only once)
+            if (!playerStartSet && obj.getType() == "player") {
+                camera.Position = obj.getPosition();
+                // zero vertical velocity and mark grounded so physics starts stable
+                playerVelocity = glm::vec3(0.0f);
+                playerGrounded = false; // let collision detection set grounded this frame
+                playerStartSet = true;
+            }
+
             if (obj.getType() == "cube") {
                 myShader.use(); // Activate shader program for cubes
                 glBindVertexArray(VAO);
@@ -327,6 +374,9 @@ int main()
                 lightSourceShader.setMat4("model", lightModel);
 
                 glDrawArrays(GL_TRIANGLES, 0, 36); // Draw light source
+            }
+            else if (obj.getType() == "player") {
+                // don't render a visual for the player here; it's used for start position only
             }
             else {
                 std::cerr << "Unknown object type: " << obj.getType() << std::endl;
@@ -377,6 +427,7 @@ void getInput(GLFWwindow* window)
     {
         glfwSetWindowShouldClose(window, true);
     }
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         camera.HandleKeyboard(FORWARD, dt, isSprinting);
@@ -393,13 +444,33 @@ void getInput(GLFWwindow* window)
     {
         camera.HandleKeyboard(RIGHT, dt, isSprinting);
     }
+
+    // Gravity toggle (debounced on key press)
+    {
+        int gState = glfwGetKey(window, GLFW_KEY_G);
+        if (gState == GLFW_PRESS && !gKeyPressedLastFrame) {
+            gravityEnabled = !gravityEnabled;
+            if (!gravityEnabled) {
+                // Immediately stop vertical motion when disabling gravity
+                playerVelocity.y = 0.0f;
+            }
+            std::cout << "Gravity " << (gravityEnabled ? "enabled" : "disabled") << std::endl;
+        }
+        gKeyPressedLastFrame = (gState == GLFW_PRESS);
+    }
+
+    // Jump handling: only allow jump when grounded
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(UP, dt, isSprinting);
+        if (playerGrounded) {
+            playerVelocity.y = JUMP_SPEED;
+            playerGrounded = false;
+        }
     }
+    // Remove direct UP/DOWN camera movement when using physics
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
-        camera.HandleKeyboard(DOWN, dt, isSprinting);
+        // reserved for crouch or other actions
     }
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
     {
